@@ -3,12 +3,16 @@ PYTHON_PKGNAME := mozilla_nimbus_shared
 VERSION := $(shell cat package.json | jq -r .version)
 PY_VERSION := $(shell cat package.json | jq -r .version | sed -e 's/-dev/.dev0/')
 
-MOCHA := ./node_modules/.bin/mocha
-ESLINT := ./node_modules/.bin/eslint
-TSC := ./node_modules/.bin/tsc
-TS_NODE := ./node_modules/.bin/ts-node-script
-PRETTIER := ./node_modules/.bin/prettier
+NPM ?= npm
+NODE ?= node
+
+MOCHA := $(NODE) ./node_modules/.bin/mocha
+ESLINT := $(NODE) ./node_modules/.bin/eslint
+TSC := $(NODE) ./node_modules/.bin/tsc
+TS_NODE := $(NODE) ./node_modules/.bin/ts-node-script
+PRETTIER := $(NODE) ./node_modules/.bin/prettier
 PYTEST := poetry run pytest
+
 
 TYPES := $(shell find ./types -name '*.ts')
 DATA_SOURCES := $(shell find ./data)
@@ -86,7 +90,7 @@ docs: $(DOCS_BUILT_STAMP)
 # Commands that make files. None of these should depend on phony targets
 
 $(NPM_INSTALL_STAMP): package.json package-lock.json
-	npm ci
+	$(NPM) ci
 	@mkdir -p $(@D)
 	@touch $@
 
@@ -125,7 +129,7 @@ $(PYTHON_SCHEMAS): $(SCHEMA_STAMP)
 	cp -R ./schemas $(PYTHON_SCHEMAS)
 
 $(NPM_PACK_FILE): package.json $(TSC_STAMP) $(SCHEMA_STAMP) $(GENERATED_DATA) $(GENERATED_TS)
-	npm pack
+	$(NPM) pack
 
 python/pyproject.toml: python/pyproject.toml.template bin/generate-pyproject-toml.ts $(NPM_INSTALL_STAMP) python/README.md
 	$(TS_NODE) ./bin/generate-pyproject-toml.ts
@@ -137,12 +141,12 @@ $(PYTHON_WHEEL): $(PYTHON_SDIST)
 	cd python; poetry build --format wheel
 
 $(DOCS_NPM_INSTALL_STAMP): docs/package.json docs/package-lock.json
-	cd docs; npm ci
+	cd docs; $(NPM) ci
 	@mkdir -p $(@D)
 	@touch $@
 
 $(DOCS_BUILT_STAMP): $(DOCS_NPM_INSTALL_STAMP) docs/next.config.js $(DOC_SOURCES) $(TSC_STAMP)
-	cd docs; npm run build
+	cd docs; $(NPM) run build
 	@mkdir -p $(@D)
 	@touch $@
 
