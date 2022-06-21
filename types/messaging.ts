@@ -162,7 +162,13 @@ export type SpecialMessageActionSchemas =
   | ShowMigrationWizard
   | Minimize
   | AcceptDoH
-  | DisableDoH;
+  | DisableDoH
+  | PinFirefoxToTaskbar
+  | SetDefaultBrowser
+  | EnableTotalCookieProtection
+  | EnableTotalCookieProtectionAndOptOut
+  | ConfigureHomepage
+  | ShowSpotlight;
 
 /** Disables all STP doorhangers. */
 interface DisableSTPDoorhangers {
@@ -298,4 +304,51 @@ interface AcceptDoH {
 /** Dismiss DOH doorhanger notification */
 interface DisableDoH {
   type: "DISABLE_DOH";
+}
+
+/** Pin the app to taskbar */
+interface PinFirefoxToTaskbar {
+  type: "PIN_FIREFOX_TO_TASKBAR";
+}
+
+/** Message action to set Firefox as default browser */
+interface SetDefaultBrowser {
+  type: "SET_DEFAULT_BROWSER";
+}
+
+/** Turn on the Total Cookie Protection feature. */
+interface EnableTotalCookieProtection {
+  type: "ENABLE_TOTAL_COOKIE_PROTECTION";
+}
+
+interface EnableTotalCookieProtectionAndOptOut {
+  type: "ENABLE_TOTAL_COOKIE_PROTECTION_AND_OPT_OUT";
+}
+
+/** Resets homepage pref and sections layout */
+interface ConfigureHomepage {
+  type: "CONFIGURE_HOMEPAGE";
+  data: {
+    /** Should reset homepage pref */
+    homePage?: "default";
+    /** Should reset newtab pref */
+    newtab?: "default";
+    /** Section name and boolean value that specifies if the secion should be on or off. */
+    layout?: {
+      search: boolean;
+      topsites: boolean;
+      highlights: boolean;
+      snippets: boolean;
+      topstories: boolean;
+    };
+  };
+}
+
+/** Opens a spotlight dialog */
+interface ShowSpotlight {
+  type: "SHOW_SPOTLIGHT";
+  data: {
+    /** Object containing content rendered inside spotlight dialog */
+    content: Record<string, unknown>;
+  };
 }
