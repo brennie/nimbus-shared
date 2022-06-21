@@ -98,7 +98,10 @@ export type TriggerActionSchemas =
   | OpenBookmarkedUrl
   | FrequentVisits
   | NewSavedLogin
-  | ContentBlocking;
+  | ContentBlocking
+  | DefaultBrowserCheck
+  | CaptivePortalLogin
+  | PreferenceObserver;
 
 /** List of urls we should match against */
 type UrlParams = Array<string>;
@@ -143,6 +146,32 @@ interface ContentBlocking {
   // number param for social/protection CFRs, string param for content blocking
   // milestone
   params: Array<number> | Array<string>;
+}
+
+/** Happens when starting the browser or navigating to about:home/newtab */
+interface DefaultBrowserCheck {
+  id: "defaultBrowserCheck";
+
+  context?: {
+    /** When the source of the trigger is home/newtab" */
+    source?: "newtab";
+
+    /** When the source of the trigger is startup */
+    willShowDefaultPrompt?: boolean;
+  };
+}
+
+/** Happens when the user successfully goes through a captive portal authentication flow. */
+interface CaptivePortalLogin {
+  id: "captivePortalLogin";
+}
+
+/** Notify when a preference is added, removed or modified */
+interface PreferenceObserver {
+  id: "preferenceObserver";
+
+  /** Preference names to observe. */
+  params: Array<string>;
 }
 
 export type SpecialMessageActionSchemas =
