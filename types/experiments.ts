@@ -122,6 +122,33 @@ export interface NimbusExperiment {
   filter_expression?: string;
 }
 
+export type NimbusEnrollment = Pick<
+  NimbusExperiment,
+  "slug" | "userFacingName" | "userFacingDescription" | "featureIds" | "isRollout"
+> & {
+  /** Whether or not the enrollment is active. */
+  active: boolean;
+
+  /** Branch configuration for the experiment. */
+  branch: SingleFeatureBranch | MultiFeatureDesktopBranch | MultiFeatureMobileBranch;
+
+  /** A unique identifier for the enrollment. */
+  enrollmentId: string;
+
+  /**
+   * What kind of experiment this enrollment corresponds to.
+   *
+   * This may be "nimbus" to indicate a Nimbus experiment (the default) or "rollout" to indicate a rollout.
+   */
+  experimentType: string;
+
+  /**
+   * The last time the experiment was seen.
+   * @format date-time
+   */
+  lastSeen: string;
+};
+
 interface BucketConfig {
   /**
    * A unique, stable identifier for the user used as an input to bucket hashing
