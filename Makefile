@@ -44,13 +44,15 @@ DOCS_BUILT_STAMP := $(TIMESTAMP_DIR)/docs-built
 DOC_SOURCES := $(shell find docs/pages -type f) $(shell find docs/public -type f) docs/global_style.scss
 
 # Phony targets - commands that don't make files
-.PHONY: default install build clean test artifact lint pack docs
+.PHONY: default install build schemas clean test artifact lint pack docs
 
 default: build
 
 install: $(NPM_INSTALL_STAMP) $(PYTHON_INSTALL_STAMP) $(DOCS_NPM_INSTALL_STAMP)
 
 build: $(TSC_STAMP) $(SCHEMA_STAMP) $(GENERATED_CODE) $(GENERATED_DATA) $(PYTHON_SCHEMAS) $(GENERATED_DATA_PYTHON)
+
+schemas: $(TSC_STAMP) $(SCHEMA_STAMP)
 
 clean:
 	rm -rf dist schemas $(TSC_STAMP) $(NPM_INSTALL_STAMP) node_modules $(TIMESTAMP_DIR) $(GENERATED) \
