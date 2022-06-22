@@ -1,10 +1,10 @@
-NPM_PKGNAME := $(shell cat package.json | jq -r .name)
-PYTHON_PKGNAME := mozilla_nimbus_shared
-VERSION := $(shell cat package.json | jq -r .version)
-PY_VERSION := $(shell cat package.json | jq -r .version | sed -e 's/-dev/.dev0/')
-
 NPM ?= npm
 NODE ?= node
+
+NPM_PKGNAME := $(shell $(NODE) ./bin/pkginfo.js name)
+PYTHON_PKGNAME := mozilla_nimbus_shared
+VERSION := $(shell $(NODE) ./bin/pkginfo.js version)
+PY_VERSION := $(shell $(NODE) ./bin/pkginfo.js py-version)
 
 MOCHA := $(NODE) ./node_modules/.bin/mocha
 ESLINT := $(NODE) ./node_modules/.bin/eslint
@@ -12,7 +12,6 @@ TSC := $(NODE) ./node_modules/.bin/tsc
 TS_NODE := $(NODE) ./node_modules/.bin/ts-node-script
 PRETTIER := $(NODE) ./node_modules/.bin/prettier
 PYTEST := poetry run pytest
-
 
 TYPES := $(shell find ./types -name '*.ts')
 DATA_SOURCES := $(shell find ./data)
